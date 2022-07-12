@@ -1,0 +1,59 @@
+/* bring in normalize.css styles */
+@import "../node_modules/@csstools/normalize.css";
+@import "utilities.scss";
+
+* {
+  box-sizing: border-box;
+}
+
+.app {
+  font-family: "Open Sans", sans-serif;
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+
+  h1,
+  h2 {
+    margin: 0;
+  }
+
+  small {
+    font-size: 14px;
+  }
+
+  header {
+    height: 200px;
+    background-color: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  footer {
+    height: 50px;
+    background-color: #f9f9f9;
+  }
+
+  :global(.error) {
+    color: red;
+  }
+
+  @media (max-width: $mobile) {
+    header {
+      height: 100px;
+    }
+
+    h1 {
+      font-size: 20px;
+    }
+
+    h2 {
+      font-size: 16px;
+    }
+
+    small {
+      font-size: 12px;
+    }
+  }
+}

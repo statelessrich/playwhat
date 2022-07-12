@@ -1,0 +1,42 @@
+@import "../../utilities.scss";
+
+.home {
+  padding: 50px 100px;
+  min-height: 100vh;
+
+  .search {
+    position: relative;
+
+    .magnifyingGlass {
+      position: absolute;
+      left: 15px;
+      bottom: 0;
+      z-index: 11;
+      @extend .verticalCenter;
+    }
+
+    input {
+      height: 60px;
+      border: 2px solid #000;
+      padding: 0 15px 0 40px;
+      width: 100%;
+      font-size: 18px;
+      font-weight: bold;
+
+      &:focus {
+        border-radius: 0;
+        outline: none;
+        box-shadow: 0px 0px 2px #000;
+      }
+    }
+  }
+
+  .resultsMessage {
+    padding-top: 12px;
+    font-weight: bold;
+  }
+
+  @media (max-width: $mobile) {
+    padding: 20px;
+  }
+}

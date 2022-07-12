@@ -1,0 +1,6 @@
+const endpoints = {
+  games: "https://api.rawg.io/api/games",
+  gameDetails: (id) => `https://api.rawg.io/api/games/${id}`,
+};
+
+export default endpoints;

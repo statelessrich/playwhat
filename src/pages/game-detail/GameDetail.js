@@ -48,12 +48,12 @@ export default function GameDetail() {
   }
 
   function getGameImages() {
-    const images = gameDetails.short_screenshots.map((screenshot) => {
-      return {
-        original: screenshot.image,
-        thumbnail: screenshot.image,
-      };
-    });
+    // return array of objects containing screenshot image info, skipping the first which is used as hero image
+    const images = gameDetails.short_screenshots.slice(1, -1).map((screenshot, index) => ({
+      original: screenshot.image,
+      thumbnail: screenshot.image,
+      originalAlt: `screenshot ${index + 1}`,
+    }));
     return images;
   }
 
@@ -61,12 +61,16 @@ export default function GameDetail() {
     <div className={styles.gameDetail}>
       {gameDetails ? (
         <>
+          {/* game hero section */}
           <Game key={gameDetails.slug} data={gameDetails} isDetailPage />
+
           {gameDetails.genres && <Genres />}
           {gameDetails.released && <p>Released {format(new Date(gameDetails.released), "MM/dd/yyyy")}</p>}
           {gameDetails.metacritic && <p>Metacritic: {gameDetails.metacritic}</p>}
           {gameDetails.esrb_rating && <p>ESRB: {gameDetails.esrb_rating.name}</p>}
-          <ImageGallery items={getGameImages()} />
+
+          {/* screenshots carousel */}
+          {gameDetails.short_screenshots.length && <ImageGallery items={getGameImages()} />}
         </>
       ) : null}
     </div>

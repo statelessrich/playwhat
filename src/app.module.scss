@@ -1,5 +1,4 @@
-/* bring in normalize.css styles */
-@import "../node_modules/@csstools/normalize.css";
+@import "~@csstools/normalize.css";
 @import "utilities.scss";
 
 * {
@@ -11,6 +10,7 @@
   display: flex;
   flex: 1;
   flex-flow: column;
+  justify-content: space-between;
 
   h1,
   h2 {

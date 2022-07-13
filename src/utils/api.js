@@ -17,6 +17,7 @@ export function getGamesByName(query) {
       search: query,
       exclude_additions: true,
       search_exact: true,
+      page_size: 100,
     },
   });
 }

@@ -13,6 +13,7 @@ export default function Home() {
   const [showDefault, setShowDefault] = useState(true);
   const [defaultGames, setDefaultGames] = useState([]);
   const [error, setError] = useState("");
+  const [averageScore, setAverageScore] = useState(0);
 
   // get default list of games from api
   async function loadData() {
@@ -61,6 +62,36 @@ export default function Home() {
     loadData();
   }, []);
 
+  // update average score after search
+  useEffect(() => {
+    if (games.length) {
+      calcAverageScore(games);
+    }
+  }, [games]);
+
+  function calcAverageScore(gameList) {
+    if (!gameList.length) {
+      return;
+    }
+
+    // get games with metacritic scores
+    const scoredGames = gameList.filter((game) => game.metacritic);
+
+    // add up scores
+    let score = 0;
+    scoredGames.forEach((game) => {
+      score += game.metacritic || 0;
+    });
+
+    // return average score
+    const average = score / scoredGames.length || 0;
+    setAverageScore(average);
+  }
+
+  function onInputChange(e) {
+    setQuery(e.target.value);
+  }
+
   return (
     <div className={styles.home}>
       {/* search form */}
@@ -70,7 +101,7 @@ export default function Home() {
           {/* search input */}
           <input
             type="text"
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={onInputChange}
             placeholder="Mario, Elden Ring, etc."
             className={styles.search}
           ></input>
@@ -80,7 +111,11 @@ export default function Home() {
 
       {/* results count */}
       {games.length > 0 && !isLoading && !showDefault && (
-        <div className={styles.resultsMessage}>{games.length} results</div>
+        <div className={styles.resultsMessage}>
+          <div>{games.length} results</div>
+          {averageScore > 0 && <div>average score: {averageScore}</div>}
+          {/* {<div>average score: {calcAverageScore(games)}</div>} */}
+        </div>
       )}
 
       {/* no results message */}

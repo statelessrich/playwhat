@@ -1,3 +1,9 @@
+@import "../../utilities.scss";
+
 .gameDetail {
-    padding: 50px;
+  padding: 50px;
+
+  @media (max-width: $mobile) {
+    padding: 20px;
+  }
 }

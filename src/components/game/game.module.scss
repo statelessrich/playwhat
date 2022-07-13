@@ -2,7 +2,6 @@
 
 .game {
   height: 250px;
-  // background-color: lavender;
   margin: 20px 0;
   position: relative;
   overflow: hidden;
@@ -21,7 +20,6 @@
 
   &:not(.gameDetails):hover {
     transform: scale(1.005);
-    // box-shadow: 0px 0px 5px 2px #c8c8c8;
     box-shadow: 0px 0px 4px #000;
     cursor: pointer;
   }
@@ -43,13 +41,7 @@
     z-index: -111;
   }
 
-  &.gameDetails {
-    height: 450px;
-  }
-
   @media (max-width: $mobile) {
-    // height: 150px;
-
     img {
       top: 0;
     }

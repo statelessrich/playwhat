@@ -1,9 +1,30 @@
 @import "../../utilities.scss";
 
 .gameDetail {
-  padding: 50px;
+  padding: 50px 50px 100px 50px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+
+  .details {
+    margin-top: 80px;
+    display: grid;
+    grid-auto-columns: 2fr 1fr;
+    grid-auto-flow: column;
+    column-gap: 50px;
+    row-gap: 20px;
+  }
+
+  .screenshots {
+    margin-top: 50px;
+  }
 
   @media (max-width: $mobile) {
-    padding: 20px;
+    padding: 20px 20px 100px 20px;
+
+    .details {
+      margin-top: 30px;
+      grid-auto-flow: row;
+    }
   }
 }

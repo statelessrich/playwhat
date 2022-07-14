@@ -38,3 +38,11 @@ export function getGameDetails(id) {
     },
   });
 }
+
+export function getGameScreenshots(id) {
+  return axios.get(endpoints.gameScreenshots(id), {
+    params: {
+      key: API_KEY,
+    },
+  });
+}

@@ -10,11 +10,14 @@ export default function Game({ data, isDetailPage, isLoading }) {
   const navigate = useNavigate();
   const { setGameDetails } = useContext(Context);
 
-  function onClick() {
-    getGameDetails(data.id);
-
-    setGameDetails(data);
-    navigate("/game/" + data.slug);
+  async function onClick() {
+    try {
+      const response = await getGameDetails(data.id);
+      setGameDetails(response.data);
+      navigate("/game/" + response.data.id);
+    } catch {
+      // error
+    }
   }
 
   return (

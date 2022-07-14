@@ -112,9 +112,10 @@ export default function Home() {
       {/* results count */}
       {games.length > 0 && !isLoading && !showDefault && (
         <div className={styles.resultsMessage}>
-          <div>{games.length} results</div>
+          <div>
+            {games.length} result{games.length > 1 && "s"}
+          </div>
           {averageScore > 0 && <div>average score: {averageScore}</div>}
-          {/* {<div>average score: {calcAverageScore(games)}</div>} */}
         </div>
       )}
 

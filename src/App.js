@@ -19,7 +19,7 @@ function App() {
           <Routes>{routes}</Routes>
         </ScrollToTop>
 
-        <footer />
+        <footer>developed by Richard Pires</footer>
       </div>
     </Provider>
   );

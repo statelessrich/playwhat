@@ -1,12 +1,18 @@
 @import "~@csstools/normalize.css";
 @import "utilities.scss";
 
+@font-face {
+  font-family: "IdentityFont";
+  src: url(./fonts/LTAIdentity.Medium.ttf) format("truetype");
+}
+
 * {
   box-sizing: border-box;
 }
 
 .app {
-  font-family: "Open Sans", sans-serif;
+  // font-family: "Open Sans", sans-serif;
+  font-family: "IdentityFont", sans-serif;
   display: flex;
   flex: 1;
   flex-flow: column;
@@ -33,7 +39,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-weight: bold;
   }
 
   :global(.error) {

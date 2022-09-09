@@ -1,10 +1,10 @@
 import Skeleton from "react-loading-skeleton";
 import styles from "./game.module.scss";
 import { useNavigate } from "react-router-dom";
-import { Context } from "../../utils/Context";
+import { Context } from "utils/Context";
 import { useContext } from "react";
-import Platforms from "../Platforms";
-import { getGameDetails } from "../../utils/api";
+import Platforms from "components/Platforms";
+import { getGameDetails } from "utils/api";
 
 export default function Game({ data, isDetailPage, isLoading }) {
   const navigate = useNavigate();

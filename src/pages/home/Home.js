@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { getDefaultGames, getGamesByName } from "../../utils/api";
-import Game from "../../components/game/Game";
+import { getDefaultGames, getGamesByName } from "utils/api";
+import Game from "components/game/Game";
 import styles from "./home.module.scss";
 import "react-loading-skeleton/dist/skeleton.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import Search from "components/search/Search";
 
 export default function Home() {
   const [games, setGames] = useState([]);
@@ -96,17 +95,7 @@ export default function Home() {
     <div className={styles.home}>
       {/* search form */}
       <form onSubmit={search}>
-        <div className={styles.search}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.magnifyingGlass} />
-          {/* search input */}
-          <input
-            type="text"
-            onChange={onInputChange}
-            placeholder="Mario, Elden Ring, etc."
-            className={styles.search}
-          ></input>
-          {/* <input type="submit" value="search" onClick={search}></input> */}
-        </div>
+        <Search onInputChange={onInputChange} />
       </form>
 
       {/* results count */}

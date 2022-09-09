@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import Game from "../../components/game/Game";
-import { Context } from "../../utils/Context";
+import Game from "components/game/Game";
+import { Context } from "utils/Context";
 import format from "date-fns/format";
 import styles from "./gameDetail.module.scss";
 import { useNavigate } from "react-router-dom";
-import { getGameDetails, getGameScreenshots } from "../../utils/api";
+import { getGameDetails, getGameScreenshots } from "utils/api";
 import { useLocation } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/scss/image-gallery.scss";

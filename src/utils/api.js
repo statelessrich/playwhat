@@ -22,6 +22,9 @@ export function getGamesByName(query) {
   });
 }
 
+
+
+
 export function getGamesByGenre(query) {
   return axios.get(endpoints.games, {
     params: {

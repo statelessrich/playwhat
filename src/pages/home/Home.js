@@ -4,6 +4,7 @@ import Game from "components/game/Game";
 import styles from "./home.module.scss";
 import "react-loading-skeleton/dist/skeleton.css";
 import Search from "components/search/Search";
+import { useLocalStorage, useTitle } from "react-use";
 
 export default function Home() {
   const [games, setGames] = useState([]);
@@ -13,15 +14,26 @@ export default function Home() {
   const [defaultGames, setDefaultGames] = useState([]);
   const [error, setError] = useState("");
   const [averageScore, setAverageScore] = useState(0);
+  const [storedQuery, setStoredQuery] = useLocalStorage("query");
+  useTitle("playwhat");
 
   // get default list of games from api
   async function loadData() {
     setIsLoading(true);
 
     try {
-      const response = await getDefaultGames();
-      setDefaultGames(response.data.results);
-      setGames(response.data.results);
+      // load saved query or load default list of games
+      if (storedQuery) {
+        setQuery(storedQuery);
+        const response = await getGamesByName(storedQuery);
+        setGames(response.data.results);
+        setShowDefault(false);
+      } else {
+        const response = await getDefaultGames();
+        setDefaultGames(response.data.results);
+        setGames(response.data.results);
+      }
+
       setIsLoading(false);
     } catch {
       setError("There was an error :( please try again");
@@ -32,6 +44,10 @@ export default function Home() {
   // on enter key press
   async function search(event) {
     event.preventDefault();
+
+    // save query to local storage to use on future page load
+    setStoredQuery(query);
+
     setGames([]);
     setError("");
 
@@ -42,9 +58,8 @@ export default function Home() {
       return;
     }
 
-    // search for games with input
+    // search for games with input query
     setIsLoading(true);
-
     try {
       const response = await getGamesByName(query);
       setGames(response.data.results);
@@ -59,6 +74,7 @@ export default function Home() {
   // get games on page load
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // update average score after search
@@ -95,7 +111,7 @@ export default function Home() {
     <div className={styles.home}>
       {/* search form */}
       <form onSubmit={search}>
-        <Search onInputChange={onInputChange} />
+        <Search onInputChange={onInputChange} value={query} />
       </form>
 
       {/* results count */}

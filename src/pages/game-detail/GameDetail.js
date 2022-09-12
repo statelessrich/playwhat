@@ -8,6 +8,7 @@ import { getGameDetails, getGameScreenshots } from "utils/api";
 import { useLocation } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/scss/image-gallery.scss";
+import { useTitle } from "react-use";
 
 export default function GameDetail() {
   const { gameDetails, setGameDetails } = useContext(Context);
@@ -15,6 +16,9 @@ export default function GameDetail() {
   const navigate = useNavigate();
   const location = useLocation();
   const id = location.pathname.split("/")[2];
+
+  // set game name in page title
+  useTitle("playwhat - " + gameDetails.name);
 
   useEffect(() => {
     // get game details if none exist

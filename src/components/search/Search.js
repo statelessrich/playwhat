@@ -3,12 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import styles from "./search.module.scss";
 
-export default function Search({ onInputChange }) {
+export default function Search({ onInputChange, value }) {
   return (
     <div className={styles.search}>
       <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.magnifyingGlass} />
       {/* search input */}
       <input
+        value={value}
         type="text"
         onChange={onInputChange}
         placeholder="Mario, Elden Ring, etc."

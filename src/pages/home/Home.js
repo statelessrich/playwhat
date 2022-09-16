@@ -22,15 +22,17 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      // load saved query or load default list of games
+      // get default list of games
+      const response = await getDefaultGames();
+      setDefaultGames(response.data.results);
+
+      // if query is stored, do search
       if (storedQuery) {
         setQuery(storedQuery);
         const response = await getGamesByName(storedQuery);
         setGames(response.data.results);
         setShowDefault(false);
       } else {
-        const response = await getDefaultGames();
-        setDefaultGames(response.data.results);
         setGames(response.data.results);
       }
 

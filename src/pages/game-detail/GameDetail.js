@@ -1,24 +1,34 @@
 import { useContext, useEffect, useState } from "react";
 import Game from "components/game/Game";
 import { Context } from "utils/Context";
-import format from "date-fns/format";
 import styles from "./gameDetail.module.scss";
 import { useNavigate } from "react-router-dom";
 import { getGameDetails, getGameScreenshots } from "utils/api";
 import { useLocation } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
-import "react-image-gallery/styles/scss/image-gallery.scss";
 import { useTitle } from "react-use";
+import { format, isFuture, parseISO } from "date-fns";
+import { atcb_init } from "add-to-calendar-button";
+
+import "react-image-gallery/styles/scss/image-gallery.scss";
+import "add-to-calendar-button/assets/css/atcb.css";
 
 export default function GameDetail() {
   const { gameDetails, setGameDetails } = useContext(Context);
   const [screenshots, setScreenshots] = useState([]);
+  // const [unreleased, setUnreleased] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const id = location.pathname.split("/")[2];
 
+  let title = "playwhat";
+
+  if (gameDetails?.name) {
+    title += ` - ${gameDetails.name}`;
+  }
+
   // set game name in page title
-  useTitle("playwhat - " + gameDetails.name);
+  useTitle(title);
 
   useEffect(() => {
     // get game details if none exist
@@ -30,6 +40,11 @@ export default function GameDetail() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // load add to calendar button after game details
+  useEffect(() => {
+    atcb_init();
+  }, [gameDetails]);
 
   async function loadScreenshots() {
     const screenshotResponse = await getGameScreenshots(id);
@@ -71,6 +86,33 @@ export default function GameDetail() {
     return images;
   }
 
+  // returns release date and calendar button if in future
+  function getReleaseDate() {
+    if (!gameDetails.released) {
+      return;
+    }
+
+    const date = parseISO(gameDetails.released);
+
+    if (isFuture(date)) {
+      return (
+        <>
+          <p>Releases {format(new Date(gameDetails.released), "MM/dd/yyyy")}</p>
+
+          {/* add to calendar button */}
+          <div className="atcb">
+            {"{"}
+            "name":"{gameDetails.name} release","startDate": "{gameDetails.released}",
+            "startTime":"00:00","endTime":"23:59", "label":"Add to Calendar", "options":[ "Apple", "Google",
+            "iCal", "Microsoft365", "Outlook.com", "Yahoo" ],"timeZone":"currentBrowser"{"}"}
+          </div>
+        </>
+      );
+    } else {
+      <p>Released {format(new Date(gameDetails.released), "MM/dd/yyyy")}</p>;
+    }
+  }
+
   return (
     <div className={styles.gameDetail}>
       {gameDetails ? (
@@ -92,7 +134,7 @@ export default function GameDetail() {
               )}
 
               {/* release date */}
-              {gameDetails.released && <p>Released {format(new Date(gameDetails.released), "MM/dd/yyyy")}</p>}
+              {getReleaseDate()}
 
               {/* metacritic score */}
               {gameDetails.metacritic && <p>Metacritic: {gameDetails.metacritic}</p>}
@@ -109,7 +151,9 @@ export default function GameDetail() {
             </div>
           )}
         </>
-      ) : null}
+      ) : (
+        <Game isLoading />
+      )}
     </div>
   );
 }

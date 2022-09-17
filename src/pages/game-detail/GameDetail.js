@@ -9,6 +9,7 @@ import ImageGallery from "react-image-gallery";
 import { useTitle } from "react-use";
 import { format, isFuture, parseISO } from "date-fns";
 import { atcb_init } from "add-to-calendar-button";
+import DOMPurify from "dompurify";
 
 import "react-image-gallery/styles/scss/image-gallery.scss";
 import "add-to-calendar-button/assets/css/atcb.css";
@@ -64,7 +65,7 @@ export default function GameDetail() {
         throw new Error();
       }
     } catch {
-      // on error go to home
+      // if error go to home
       navigate("/");
     }
   }
@@ -123,10 +124,10 @@ export default function GameDetail() {
           {/* game details */}
           <div className={styles.details}>
             {/* description */}
-            <div dangerouslySetInnerHTML={{ __html: gameDetails.description }}></div>
+            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(gameDetails.description) }}></div>
 
-            {/* other details */}
             <div>
+              {/* list of genres */}
               {gameDetails.genres && (
                 <p>
                   <Genres />

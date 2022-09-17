@@ -16,7 +16,8 @@ export default function Game({ data, isDetailPage, isLoading }) {
       setGameDetails(response.data);
       navigate("/game/" + response.data.id);
     } catch {
-      // error
+      // if error go to home
+      navigate("/");
     }
   }
 
@@ -29,10 +30,15 @@ export default function Game({ data, isDetailPage, isLoading }) {
     >
       {data ? (
         <>
+          {/* background image */}
           <img src={data.background_image} alt={data.name} />
+
           <h2>
+            {/* name */}
             {data.name}
             <br />
+
+            {/* list of platforms */}
             <small>
               <Platforms platforms={data.platforms} />
             </small>

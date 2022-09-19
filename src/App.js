@@ -14,6 +14,7 @@ function App() {
       // show toast when user returns to app
       toast("Welcome back!", {
         position: toast.POSITION.BOTTOM_CENTER,
+        toastId: "visible",
       });
     }
   });

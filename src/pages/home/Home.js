@@ -5,11 +5,13 @@ import styles from "./home.module.scss";
 import "react-loading-skeleton/dist/skeleton.css";
 import Search from "components/search/Search";
 import { useLocalStorage, useTitle } from "react-use";
+import PageLoader from "components/page-loader/PageLoader";
 
 export default function Home() {
   const [games, setGames] = useState([]);
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
   const [showDefault, setShowDefault] = useState(true);
   const [defaultGames, setDefaultGames] = useState([]);
   const [error, setError] = useState("");
@@ -37,6 +39,7 @@ export default function Home() {
       }
 
       setIsLoading(false);
+      setIsPageLoading(false);
     } catch {
       setError("There was an error :( please try again");
       setIsLoading(false);
@@ -110,6 +113,10 @@ export default function Home() {
   }
 
   return (
+
+  return isPageLoading ? (
+    <PageLoader />
+  ) : (
     <div className={styles.home}>
       {/* search form */}
       <form onSubmit={search}>

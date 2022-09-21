@@ -7,6 +7,16 @@
   max-width: 800px;
   margin: 0 auto;
 
+  .addGameLink {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 0 0 0;
+
+    p {
+      cursor: pointer;
+    }
+  }
+
   .resultsMessage {
     padding-top: 12px;
     font-weight: bold;

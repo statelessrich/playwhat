@@ -11,6 +11,11 @@ export default function Game({ data, isDetailPage, isLoading }) {
   const { setGameDetails } = useContext(Context);
 
   async function onClick() {
+    // do nothing if user added game
+    if (data.isUserAdded) {
+      return;
+    }
+
     try {
       const response = await getGameDetails(data.id);
       setGameDetails(response.data);

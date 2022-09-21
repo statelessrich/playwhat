@@ -5,7 +5,10 @@ import styles from "./home.module.scss";
 import "react-loading-skeleton/dist/skeleton.css";
 import Search from "components/search/Search";
 import { useLocalStorage, useTitle } from "react-use";
+import AddGameModal from "components/add-game-modal/AddGameModal";
 import PageLoader from "components/page-loader/PageLoader";
+import { toast } from "react-toastify";
+import { isPast, parseISO } from "date-fns";
 
 export default function Home() {
   const [games, setGames] = useState([]);
@@ -17,17 +20,34 @@ export default function Home() {
   const [error, setError] = useState("");
   const [averageScore, setAverageScore] = useState(0);
   const [storedQuery, setStoredQuery] = useLocalStorage("query");
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
   useTitle("playwhat");
+
+  // remove games without release date and released games without esrb rating
+  function filterGames(gamesToFilter) {
+    const filtered = gamesToFilter.filter((game) => {
+      if (!game.released) {
+        return false;
+      }
+
+      const date = parseISO(game.released);
+
+      if (isPast(date) && game.esrb_rating) {
+        return true;
+      }
+
+      return false;
+    });
+
+    return filtered;
+  }
 
   // get default list of games from api
   async function loadData() {
     setIsLoading(true);
 
     try {
-      // get default list of games
-      const response = await getDefaultGames();
-      setDefaultGames(response.data.results);
-
       // if query is stored, do search
       if (storedQuery) {
         setQuery(storedQuery);
@@ -35,6 +55,9 @@ export default function Home() {
         setGames(response.data.results);
         setShowDefault(false);
       } else {
+        // get default list of games
+        const response = await getDefaultGames();
+        setDefaultGames(response.data.results);
         setGames(response.data.results);
       }
 
@@ -55,10 +78,15 @@ export default function Home() {
 
     setGames([]);
     setError("");
+    setIsLoading(true);
 
     // if empty input, display default list of games
     if (!query) {
       setShowDefault(true);
+
+      // get default list of games
+      const response = await getDefaultGames();
+      setDefaultGames(response.data.results);
       setGames(defaultGames);
       return;
     }
@@ -67,7 +95,7 @@ export default function Home() {
     setIsLoading(true);
     try {
       const response = await getGamesByName(query);
-      setGames(response.data.results);
+      setGames(filterGames(response.data.results));
     } catch {
       setError("There was an error :( please try again");
     }
@@ -105,24 +133,49 @@ export default function Home() {
 
     // return average score
     const average = score / scoredGames.length || 0;
-    setAverageScore(average);
+    setAverageScore(average.toFixed(0));
   }
 
   function onInputChange(e) {
     setQuery(e.target.value);
   }
 
-  return (
+  function addGame() {
+    setIsAddModalOpen(true);
+  }
+
+  function submitGame(game) {
+    // add new game to list of games
+    setGames((prevState) => [game, ...prevState]);
+
+    toast(`${game.name} added`, {
+      position: toast.POSITION.BOTTOM_CENTER,
+      toastId: "visible",
+    });
+  }
 
   return isPageLoading ? (
     <PageLoader />
   ) : (
     <div className={styles.home}>
+      {/* add game modal */}
+      {/* {AddGameModal({
+        submitGame: submitGame,
+        isOpen: isAddModalOpen,
+        closeModal: () => setIsAddModalOpen(false),
+      })} */}
+      <AddGameModal
+        submitGame={submitGame}
+        isOpen={isAddModalOpen}
+        closeModal={() => setIsAddModalOpen(false)}
+      ></AddGameModal>
       {/* search form */}
       <form onSubmit={search}>
         <Search onInputChange={onInputChange} value={query} />
       </form>
-
+      <div className={styles.addGameLink}>
+        <p onClick={addGame}>+ add game</p>
+      </div>
       {/* results count */}
       {games.length > 0 && !isLoading && !showDefault && (
         <div className={styles.resultsMessage}>
@@ -132,18 +185,14 @@ export default function Home() {
           {averageScore > 0 && <div>average score: {averageScore}</div>}
         </div>
       )}
-
       {/* no results message */}
       {!games.length && !isLoading && !error && <div className={styles.resultsMessage}>no results :(</div>}
-
       {/* error message */}
       {error && !isLoading && <div className={`${styles.resultsMessage} error`}>{error}</div>}
-
       {/* list of games  */}
       {games?.map((game) => (
         <Game key={game.slug} data={game} />
       ))}
-
       {/* loading skeleton graphics */}
       {isLoading && (
         <>

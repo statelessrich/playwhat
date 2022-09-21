@@ -11,8 +11,6 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
-      return;
-      
       // show toast when user returns to app
       toast("Welcome back!", {
         position: toast.POSITION.BOTTOM_CENTER,

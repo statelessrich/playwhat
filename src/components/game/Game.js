@@ -3,8 +3,8 @@ import styles from "./game.module.scss";
 import { useNavigate } from "react-router-dom";
 import { Context } from "utils/Context";
 import { useContext } from "react";
-import Platforms from "components/Platforms";
 import { getGameDetails } from "utils/api";
+import { formatPlatforms } from "utils/utils";
 
 export default function Game({ data, isDetailPage, isLoading }) {
   const navigate = useNavigate();
@@ -44,9 +44,7 @@ export default function Game({ data, isDetailPage, isLoading }) {
             <br />
 
             {/* list of platforms */}
-            <small>
-              <Platforms platforms={data.platforms} />
-            </small>
+            <small>{formatPlatforms(data.platforms)}</small>
           </h2>
         </>
       ) : (

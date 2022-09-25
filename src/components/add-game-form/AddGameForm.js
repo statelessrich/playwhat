@@ -33,24 +33,9 @@ export default function AddGameForm({ isOpen, closeModal, submitGame }) {
   }, [isOpen]);
 
   return (
-    <div className={styles.addGameModal}>
+    <div className={styles.addGameForm}>
       {/* handleSubmit runs validation before calling onSubmit */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* name */}
-        <label>Name</label>
-        {/* register your input into the hook by invoking the "register" function */}
-        <input {...register("name", { required: true })} />
-        {errors.name && <label className="error">Required</label>}
-
-        {/* image url */}
-        <label>Image url</label>
-        {/* image */}
-        <input
-          defaultValue="https://www.theedgesusu.co.uk/wp-content/uploads/2017/09/Super-Mario-Sunshine.jpg"
-          {...register("background_image", { required: true })}
-        />
-        {errors.background_image && <label className="error">Required</label>}
-
         {/* platforms */}
         {platforms && (
           <>
@@ -59,6 +44,7 @@ export default function AddGameForm({ isOpen, closeModal, submitGame }) {
             <Controller
               render={({ field: { onChange } }) => (
                 <Select
+                  className={styles.select}
                   isMulti
                   options={platforms.map((platform) => ({
                     value: platform.name,
@@ -79,8 +65,23 @@ export default function AddGameForm({ isOpen, closeModal, submitGame }) {
           </>
         )}
 
+        {/* name */}
+        <label>Name</label>
+        {/* register your input into the hook by invoking the "register" function */}
+        <input {...register("name", { required: true })} />
+        {errors.name && <label className="error">Required</label>}
+
+        {/* image url */}
+        <label>Image url</label>
+        {/* image */}
+        <input
+          defaultValue="https://www.theedgesusu.co.uk/wp-content/uploads/2017/09/Super-Mario-Sunshine.jpg"
+          {...register("background_image", { required: true })}
+        />
+        {errors.background_image && <label className="error">Required</label>}
+
         {/* submit button */}
-        <input type="submit" />
+        <input className={styles.btn} type="submit" />
       </form>
     </div>
   );

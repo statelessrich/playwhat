@@ -5,10 +5,11 @@ import styles from "./home.module.scss";
 import "react-loading-skeleton/dist/skeleton.css";
 import Search from "components/search/Search";
 import { useLocalStorage, useTitle } from "react-use";
-import AddGameModal from "components/add-game-modal/AddGameModal";
+// import AddGameModal from "components/add-game-modal/AddGameModal";
 import PageLoader from "components/page-loader/PageLoader";
 import { toast } from "react-toastify";
 import { isPast, parseISO } from "date-fns";
+import { openAddGameModal } from "utils/utils";
 
 export default function Home() {
   const [games, setGames] = useState([]);
@@ -20,7 +21,6 @@ export default function Home() {
   const [error, setError] = useState("");
   const [averageScore, setAverageScore] = useState(0);
   const [storedQuery, setStoredQuery] = useLocalStorage("query");
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useTitle("playwhat");
 
@@ -141,7 +141,8 @@ export default function Home() {
   }
 
   function addGame() {
-    setIsAddModalOpen(true);
+    // setIsAddModalOpen(true);
+    openAddGameModal(submitGame);
   }
 
   function submitGame(game) {
@@ -158,17 +159,6 @@ export default function Home() {
     <PageLoader />
   ) : (
     <div className={styles.home}>
-      {/* add game modal */}
-      {/* {AddGameModal({
-        submitGame: submitGame,
-        isOpen: isAddModalOpen,
-        closeModal: () => setIsAddModalOpen(false),
-      })} */}
-      <AddGameModal
-        submitGame={submitGame}
-        isOpen={isAddModalOpen}
-        closeModal={() => setIsAddModalOpen(false)}
-      ></AddGameModal>
       {/* search form */}
       <form onSubmit={search}>
         <Search onInputChange={onInputChange} value={query} />

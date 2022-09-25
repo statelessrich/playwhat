@@ -20,6 +20,11 @@
   height: 40px;
 }
 
+// sweetalert2 modal
+:global(h2.swal2-title) {
+  padding: 0 10px;
+}
+
 :global(form) {
   label {
     text-align: left;

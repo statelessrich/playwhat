@@ -1,11 +1,30 @@
-.addGameModal {
+.addGameForm {
   form {
     display: grid;
     row-gap: 10px;
 
-    button {
-      width: 200px;
-      margin: 20px auto;
+    .select {
+      text-align: left;
+      // border: 2px solid #000;
+
+      input {
+        height: 100%;
+      }
+
+      input:focus {
+        box-shadow: none;
+      }
+    }
+
+    input {
+      height: 40px;
+    }
+
+    .btn {
+      width: 100px;
+      margin: 20px 0 0 auto;
+      cursor: pointer;
+      background-color: #fff;
     }
   }
 }

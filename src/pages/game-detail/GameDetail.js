@@ -13,6 +13,7 @@ import DOMPurify from "dompurify";
 
 import "react-image-gallery/styles/scss/image-gallery.scss";
 import "add-to-calendar-button/assets/css/atcb.css";
+import { formatGenres } from "utils/utils";
 
 export default function GameDetail() {
   const { gameDetails, setGameDetails } = useContext(Context);
@@ -72,9 +73,7 @@ export default function GameDetail() {
 
   function Genres() {
     // return list of genres separated by |
-    return gameDetails.genres.map(
-      (genre, index) => `${genre.name}${index < gameDetails.genres.length - 1 ? "|" : ""}`,
-    );
+    return formatGenres(gameDetails.genres);
   }
 
   function getGameImages() {

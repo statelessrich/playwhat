@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/playwhat/static/css/main.401bca96.css",
-    "main.js": "/playwhat/static/js/main.7ccde2de.js",
+    "main.js": "/playwhat/static/js/main.00e69b55.js",
     "static/js/787.1bc59db5.chunk.js": "/playwhat/static/js/787.1bc59db5.chunk.js",
     "static/media/LTAIdentity.Medium.ttf": "/playwhat/static/media/LTAIdentity.Medium.4fe845ab3b59fbc9373b.ttf",
     "index.html": "/playwhat/index.html",
     "main.401bca96.css.map": "/playwhat/static/css/main.401bca96.css.map",
-    "main.7ccde2de.js.map": "/playwhat/static/js/main.7ccde2de.js.map",
+    "main.00e69b55.js.map": "/playwhat/static/js/main.00e69b55.js.map",
     "787.1bc59db5.chunk.js.map": "/playwhat/static/js/787.1bc59db5.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.401bca96.css",
-    "static/js/main.7ccde2de.js"
+    "static/js/main.00e69b55.js"
   ]
 }

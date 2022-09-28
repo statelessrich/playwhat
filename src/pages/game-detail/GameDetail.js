@@ -18,7 +18,6 @@ import { formatGenres } from "utils/utils";
 export default function GameDetail() {
   const { gameDetails, setGameDetails } = useContext(Context);
   const [screenshots, setScreenshots] = useState([]);
-  // const [unreleased, setUnreleased] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const id = location.pathname.split("/")[2];
@@ -41,7 +40,7 @@ export default function GameDetail() {
         loadScreenshots();
         return;
       }
-      
+
       // get game details if none exist
       loadData();
     }

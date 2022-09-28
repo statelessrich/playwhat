@@ -5,7 +5,6 @@ import styles from "./home.module.scss";
 import "react-loading-skeleton/dist/skeleton.css";
 import Search from "components/search/Search";
 import { useLocalStorage, useTitle } from "react-use";
-// import AddGameModal from "components/add-game-modal/AddGameModal";
 import PageLoader from "components/page-loader/PageLoader";
 import { toast } from "react-toastify";
 import { isPast, parseISO } from "date-fns";
@@ -141,7 +140,6 @@ export default function Home() {
   }
 
   function addGame() {
-    // setIsAddModalOpen(true);
     openAddGameModal(submitGame);
   }
 
@@ -155,9 +153,7 @@ export default function Home() {
     });
   }
 
-  return isPageLoading ? (
-    <PageLoader />
-  ) : (
+  return (
     <div className={styles.home}>
       {/* search form */}
       <form onSubmit={search}>

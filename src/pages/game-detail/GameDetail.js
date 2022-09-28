@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getGameDetails, getGameScreenshots } from "utils/api";
 import { useLocation } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
-import { useTitle } from "react-use";
+import { useLocalStorage, useTitle } from "react-use";
 import { format, isFuture, parseISO } from "date-fns";
 import { atcb_init } from "add-to-calendar-button";
 import DOMPurify from "dompurify";
@@ -22,6 +22,7 @@ export default function GameDetail() {
   const navigate = useNavigate();
   const location = useLocation();
   const id = location.pathname.split("/")[2];
+  const [storedDetails, setStoredDetails] = useLocalStorage(`details-${id}`);
 
   let title = "playwhat";
 
@@ -33,8 +34,15 @@ export default function GameDetail() {
   useTitle(title);
 
   useEffect(() => {
-    // get game details if none exist
     if (!gameDetails) {
+      // check for cached data
+      if (storedDetails) {
+        setGameDetails(storedDetails);
+        loadScreenshots();
+        return;
+      }
+      
+      // get game details if none exist
       loadData();
     }
 
@@ -61,6 +69,7 @@ export default function GameDetail() {
 
       if (details) {
         setGameDetails(details);
+        setStoredDetails(details);
       } else {
         // no results
         throw new Error();

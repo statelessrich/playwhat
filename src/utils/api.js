@@ -4,6 +4,8 @@ import endpoints from "./endpoints";
 // rawg api key
 const API_KEY = "0564d8ca91e14411a88f067dec3aab6b";
 
+axios.defaults.timeout = 10000;
+
 export function getDefaultGames() {
   return axios.get(endpoints.games, {
     params: {

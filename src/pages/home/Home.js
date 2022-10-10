@@ -8,9 +8,13 @@ import { useLocalStorage, useTitle } from "react-use";
 import { toast } from "react-toastify";
 import { isPast, parseISO } from "date-fns";
 import { openAddGameModal } from "utils/utils";
+import { useSelector, useDispatch } from "react-redux";
+import { selectGames, updateGames, deleteGames } from "gamesSlice";
+import { createGame } from "gamesSlice";
 
 export default function Home() {
-  const [games, setGames] = useState([]);
+  const games = useSelector(selectGames);
+  const dispatch = useDispatch();
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showDefault, setShowDefault] = useState(true);
@@ -49,13 +53,13 @@ export default function Home() {
       if (storedQuery) {
         setQuery(storedQuery);
         const response = await getGamesByName(storedQuery);
-        setGames(response.data.results);
+        dispatch(updateGames(response.data.results));
         setShowDefault(false);
       } else {
         // get default list of games
         const response = await getDefaultGames();
         setDefaultGames(response.data.results);
-        setGames(response.data.results);
+        dispatch(updateGames(response.data.results));
       }
 
       setIsLoading(false);
@@ -72,7 +76,8 @@ export default function Home() {
     // save query to local storage to use on future page load
     setStoredQuery(query);
 
-    setGames([]);
+    dispatch(deleteGames([]));
+
     setError("");
     setIsLoading(true);
 
@@ -83,7 +88,7 @@ export default function Home() {
       // get default list of games
       const response = await getDefaultGames();
       setDefaultGames(response.data.results);
-      setGames(defaultGames);
+      dispatch(updateGames(defaultGames));
       return;
     }
 
@@ -91,7 +96,7 @@ export default function Home() {
     setIsLoading(true);
     try {
       const response = await getGamesByName(query);
-      setGames(filterGames(response.data.results));
+      dispatch(updateGames(filterGames(response.data.results)));
     } catch {
       setError("There was an error :( please try again");
     }
@@ -142,7 +147,7 @@ export default function Home() {
 
   function submitGame(game) {
     // add new game to list of games
-    setGames((prevState) => [game, ...prevState]);
+    dispatch(createGame(game));
 
     toast(`${game.name} added`, {
       position: toast.POSITION.BOTTOM_CENTER,
@@ -168,14 +173,18 @@ export default function Home() {
           {averageScore > 0 && <div>average score: {averageScore}</div>}
         </div>
       )}
+
       {/* no results message */}
       {!games.length && !isLoading && !error && <div className={styles.resultsMessage}>no results :(</div>}
+
       {/* error message */}
       {error && !isLoading && <div className={`${styles.resultsMessage} error`}>{error}</div>}
+
       {/* list of games  */}
       {games?.map((game) => (
         <Game key={game.slug} data={game} />
       ))}
+
       {/* loading skeleton graphics */}
       {isLoading && (
         <>

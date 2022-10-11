@@ -9,8 +9,8 @@ import { toast } from "react-toastify";
 import { isPast, parseISO } from "date-fns";
 import { openAddGameModal } from "utils/utils";
 import { useSelector, useDispatch } from "react-redux";
-import { selectGames, updateGames, deleteGames } from "gamesSlice";
-import { createGame } from "gamesSlice";
+import { selectGames, updateGames, deleteGames } from "pages/home/gamesSlice";
+import { createGame } from "pages/home/gamesSlice";
 
 export default function Home() {
   const games = useSelector(selectGames);
@@ -88,7 +88,10 @@ export default function Home() {
       // get default list of games
       const response = await getDefaultGames();
       setDefaultGames(response.data.results);
-      dispatch(updateGames(defaultGames));
+      dispatch(updateGames(response.data.results));
+      setShowDefault(true);
+      setQuery("");
+      setStoredQuery("");
       return;
     }
 
@@ -145,7 +148,21 @@ export default function Home() {
     openAddGameModal(submitGame);
   }
 
-  function submitGame(game) {
+  async function submitGame(game) {
+    // show default games
+    if (defaultGames.length) {
+      updateGames(defaultGames);
+    } else {
+      // get default list of games
+      const response = await getDefaultGames();
+      console.log(response.data.results);
+      setDefaultGames(response.data.results);
+      dispatch(updateGames(response.data.results));
+      setShowDefault(true);
+      setQuery("");
+      setStoredQuery("");
+    }
+
     // add new game to list of games
     dispatch(createGame(game));
 
@@ -161,9 +178,11 @@ export default function Home() {
       <form onSubmit={search}>
         <Search onInputChange={onInputChange} value={query} />
       </form>
+
       <div className={styles.addGameLink}>
         <p onClick={addGame}>+ add game</p>
       </div>
+
       {/* results count */}
       {games.length > 0 && !isLoading && !showDefault && (
         <div className={styles.resultsMessage}>

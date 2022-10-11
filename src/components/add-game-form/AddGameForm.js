@@ -19,11 +19,11 @@ export default function AddGameForm({ isOpen, closeModal, submitGame }) {
     // format platforms data, submit new game and close modal
     game.platforms = game.platforms?.map((platform) => ({ platform: platform }));
     game.isUserAdded = true;
+
     // create slug from name, replacing white space
     game.slug = game.name.replace(/\s/g, "-");
     submitGame(game);
     closeModal();
-    // Modal.close();
   }
 
   useEffect(() => {

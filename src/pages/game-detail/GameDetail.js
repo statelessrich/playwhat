@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Game from "components/game/Game";
-import { Context } from "utils/Context";
 import styles from "./gameDetail.module.scss";
 import { useNavigate } from "react-router-dom";
 import { getGameDetails, getGameScreenshots } from "utils/api";
@@ -14,14 +13,38 @@ import DOMPurify from "dompurify";
 import "react-image-gallery/styles/scss/image-gallery.scss";
 import "add-to-calendar-button/assets/css/atcb.css";
 import { formatGenres } from "utils/utils";
+import { useMutation } from "react-query";
+import { selectGameDetails, updateGameDetails } from "./gameDetailsSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function GameDetail() {
-  const { gameDetails, setGameDetails } = useContext(Context);
-  const [screenshots, setScreenshots] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const id = location.pathname.split("/")[2];
+  const [isLoading, setIsLoading] = useState(true);
   const [storedDetails, setStoredDetails] = useLocalStorage(`details-${id}`);
+  const gameDetails = useSelector(selectGameDetails);
+
+  // game details mutation
+  const { mutate: fetchDetails } = useMutation(() => getGameDetails(id), {
+    onSettled: (response) => {
+      // update game details
+      dispatch(updateGameDetails(response.data));
+      setStoredDetails(response.data);
+      setIsLoading(false);
+
+      // load add to calendar button
+      atcb_init();
+    },
+    // go home if error (invalid game)
+    onError: () => navigate("/"),
+  });
+
+  // screenshots mutation
+  const { mutate: fetchScreenshots } = useMutation(() => getGameScreenshots(id), {
+    onSuccess: (response) => dispatch(updateGameDetails({ screenshots: response.data.results })),
+  });
 
   let title = "playwhat";
 
@@ -34,50 +57,22 @@ export default function GameDetail() {
 
   useEffect(() => {
     if (!gameDetails) {
-      // check for cached data
       if (storedDetails) {
-        setGameDetails(storedDetails);
-        loadScreenshots();
+        // load cached data
+        dispatch(updateGameDetails(storedDetails));
+        setIsLoading(false);
+        fetchScreenshots();
         return;
       }
 
-      // get game details if none exist
-      loadData();
+      // load game details if none exist
+      fetchDetails();
     }
 
-    loadScreenshots();
+    fetchScreenshots();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // load add to calendar button after game details
-  useEffect(() => {
-    atcb_init();
-  }, [gameDetails]);
-
-  async function loadScreenshots() {
-    const screenshotResponse = await getGameScreenshots(id);
-    setScreenshots(screenshotResponse?.data?.results);
-  }
-
-  async function loadData() {
-    try {
-      // get game details using id from url
-      const response = await getGameDetails(id);
-      const details = response.data;
-
-      if (details) {
-        setGameDetails(details);
-        setStoredDetails(details);
-      } else {
-        // no results
-        throw new Error();
-      }
-    } catch {
-      // if error go to home
-      navigate("/");
-    }
-  }
 
   function Genres() {
     // return list of genres separated by |
@@ -86,7 +81,7 @@ export default function GameDetail() {
 
   function getGameImages() {
     // return array of objects containing screenshot image info
-    const images = screenshots.map((screenshot, index) => ({
+    const images = gameDetails?.screenshots.map((screenshot, index) => ({
       original: screenshot.image,
       thumbnail: screenshot.image,
       originalAlt: `screenshot ${index + 1}`,
@@ -123,7 +118,7 @@ export default function GameDetail() {
 
   return (
     <div className={styles.gameDetail}>
-      {gameDetails ? (
+      {gameDetails && !isLoading ? (
         <>
           {/* game hero section */}
           <Game key={gameDetails.slug} data={gameDetails} isDetailPage />
@@ -153,7 +148,7 @@ export default function GameDetail() {
           </div>
 
           {/* screenshots carousel */}
-          {screenshots.length > 1 && (
+          {gameDetails?.screenshots?.length > 1 && (
             <div className={styles.screenshots}>
               <ImageGallery items={getGameImages()} />
             </div>

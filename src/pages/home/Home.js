@@ -11,17 +11,38 @@ import { openAddGameModal } from "utils/utils";
 import { useSelector, useDispatch } from "react-redux";
 import { selectGames, updateGames, deleteGames } from "pages/home/gamesSlice";
 import { createGame } from "pages/home/gamesSlice";
+import { useMutation } from "react-query";
 
 export default function Home() {
   const games = useSelector(selectGames);
   const dispatch = useDispatch();
   const [query, setQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [showDefault, setShowDefault] = useState(true);
-  const [defaultGames, setDefaultGames] = useState([]);
-  const [error, setError] = useState("");
   const [averageScore, setAverageScore] = useState(0);
   const [storedQuery, setStoredQuery] = useLocalStorage("query");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSearchLoading, setisSearchLoading] = useState(false);
+
+  // default games mutation
+  const {
+    error,
+    data: defaultGames = [],
+    mutate: fetchDefaultGames,
+  } = useMutation(getDefaultGames, {
+    refetchOnWindowFocus: false,
+    onSettled: () => setIsLoading(false),
+    onSuccess: (response) => dispatch(updateGames(response.data.results)),
+  });
+
+  // search games by name mutation
+  const { error: searchError, mutate: fetchGamesByName } = useMutation((query) => getGamesByName(query), {
+    refetchOnWindowFocus: false,
+    onSettled: () => setisSearchLoading(false),
+    onSuccess: (response) => {
+      dispatch(updateGames(filterGames(response.data.results)));
+      calcAverageScore(response.data.results);
+    },
+  });
 
   useTitle("playwhat");
 
@@ -46,65 +67,37 @@ export default function Home() {
 
   // get default list of games from api
   async function loadData() {
-    setIsLoading(true);
-
-    try {
-      // if query is stored, do search
-      if (storedQuery) {
-        setQuery(storedQuery);
-        const response = await getGamesByName(storedQuery);
-        dispatch(updateGames(response.data.results));
-        setShowDefault(false);
-      } else {
-        // get default list of games
-        const response = await getDefaultGames();
-        setDefaultGames(response.data.results);
-        dispatch(updateGames(response.data.results));
-      }
-
-      setIsLoading(false);
-    } catch {
-      setError("There was an error :( please try again");
-      setIsLoading(false);
+    // if query is stored, do search
+    if (storedQuery) {
+      setQuery(storedQuery);
+      fetchGamesByName(storedQuery);
+    } else {
+      // get default list of games
+      fetchDefaultGames();
+      setShowDefault(true);
     }
   }
 
   // on enter key press
   async function search(event) {
     event.preventDefault();
-
     // save query to local storage to use on future page load
     setStoredQuery(query);
-
-    dispatch(deleteGames([]));
-
-    setError("");
-    setIsLoading(true);
+    dispatch(deleteGames());
 
     // if empty input, display default list of games
     if (!query) {
       setShowDefault(true);
-
-      // get default list of games
-      const response = await getDefaultGames();
-      setDefaultGames(response.data.results);
-      dispatch(updateGames(response.data.results));
-      setShowDefault(true);
+      setIsLoading(true);
+      fetchDefaultGames();
       setQuery("");
       setStoredQuery("");
       return;
     }
 
     // search for games with input query
-    setIsLoading(true);
-    try {
-      const response = await getGamesByName(query);
-      dispatch(updateGames(filterGames(response.data.results)));
-    } catch {
-      setError("There was an error :( please try again");
-    }
-
-    setIsLoading(false);
+    setisSearchLoading(true);
+    fetchGamesByName(query);
     setShowDefault(false);
   }
 
@@ -113,13 +106,6 @@ export default function Home() {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // update average score after search
-  useEffect(() => {
-    if (games.length) {
-      calcAverageScore(games);
-    }
-  }, [games]);
 
   function calcAverageScore(gameList) {
     if (!gameList.length) {
@@ -150,14 +136,11 @@ export default function Home() {
 
   async function submitGame(game) {
     // show default games
-    if (defaultGames.length) {
-      updateGames(defaultGames);
+    if (defaultGames?.data?.results) {
+      dispatch(updateGames(defaultGames.data.results));
     } else {
       // get default list of games
-      const response = await getDefaultGames();
-      console.log(response.data.results);
-      setDefaultGames(response.data.results);
-      dispatch(updateGames(response.data.results));
+      fetchDefaultGames();
       setShowDefault(true);
       setQuery("");
       setStoredQuery("");
@@ -166,6 +149,7 @@ export default function Home() {
     // add new game to list of games
     dispatch(createGame(game));
 
+    // show game added toast message
     toast(`${game.name} added`, {
       position: toast.POSITION.BOTTOM_CENTER,
       toastId: "visible",
@@ -179,12 +163,13 @@ export default function Home() {
         <Search onInputChange={onInputChange} value={query} />
       </form>
 
+      {/* add game link */}
       <div className={styles.addGameLink}>
         <p onClick={addGame}>+ add game</p>
       </div>
 
       {/* results count */}
-      {games.length > 0 && !isLoading && !showDefault && (
+      {games.length > 0 && !showDefault && (
         <div className={styles.resultsMessage}>
           <div>
             {games.length} result{games.length > 1 && "s"}
@@ -194,10 +179,14 @@ export default function Home() {
       )}
 
       {/* no results message */}
-      {!games.length && !isLoading && !error && <div className={styles.resultsMessage}>no results :(</div>}
+      {!games?.length && !isLoading && !isSearchLoading && !error && !searchError && (
+        <div className={styles.resultsMessage}>no results :(</div>
+      )}
 
       {/* error message */}
-      {error && !isLoading && <div className={`${styles.resultsMessage} error`}>{error}</div>}
+      {(error || searchError) && (
+        <div className={`${styles.resultsMessage} error`}>{error || searchError}</div>
+      )}
 
       {/* list of games  */}
       {games?.map((game) => (
@@ -205,7 +194,7 @@ export default function Home() {
       ))}
 
       {/* loading skeleton graphics */}
-      {isLoading && (
+      {(isLoading || isSearchLoading) && (
         <>
           <Game isLoading />
           <Game isLoading />

@@ -7,6 +7,9 @@ import ScrollToTop from "./utils/ScrollToTop";
 import Header from "./components/header/Header";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   document.addEventListener("visibilitychange", () => {
@@ -22,17 +25,19 @@ function App() {
   return (
     <Suspense fallback={<h1>potato</h1>}>
       <Provider>
-        <div className={styles.app}>
-          <Header />
+        <QueryClientProvider client={queryClient}>
+          <div className={styles.app}>
+            <Header />
 
-          <ToastContainer hideProgressBar closeOnClick autoClose={2000} />
+            <ToastContainer hideProgressBar closeOnClick autoClose={2000} />
 
-          <ScrollToTop>
-            <Routes>{routes}</Routes>
-          </ScrollToTop>
+            <ScrollToTop>
+              <Routes>{routes}</Routes>
+            </ScrollToTop>
 
-          <footer>developed by Richard Pires</footer>
-        </div>
+            <footer>developed by Richard Pires</footer>
+          </div>
+        </QueryClientProvider>
       </Provider>
     </Suspense>
   );

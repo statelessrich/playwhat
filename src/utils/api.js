@@ -7,6 +7,7 @@ const API_KEY = "0564d8ca91e14411a88f067dec3aab6b";
 axios.defaults.timeout = 10000;
 
 export function getDefaultGames() {
+  // return Promise.reject("error");
   return axios.get(endpoints.games, {
     params: {
       key: API_KEY,
@@ -15,6 +16,8 @@ export function getDefaultGames() {
 }
 
 export function getGamesByName(query) {
+  // return Promise.reject("error");
+
   return axios.get(endpoints.games, {
     params: {
       key: API_KEY,

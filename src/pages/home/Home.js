@@ -6,7 +6,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Search from "components/search/Search";
 import { useLocalStorage, useTitle } from "react-use";
 import { toast } from "react-toastify";
-import { isPast, parseISO } from "date-fns";
+import { isBefore, isPast, parseISO } from "date-fns";
 import { openAddGameModal } from "utils/utils";
 import { useSelector, useDispatch } from "react-redux";
 import { selectGames, updateGames, deleteGames } from "pages/home/gamesSlice";
@@ -31,7 +31,13 @@ export default function Home() {
   } = useMutation(getDefaultGames, {
     refetchOnWindowFocus: false,
     onSettled: () => setIsLoading(false),
-    onSuccess: (response) => dispatch(updateGames(response.data.results)),
+    onSuccess: (response) => {
+      dispatch(updateGames(response.data.results));
+      setShowDefault(true);
+      setQuery("");
+      setStoredQuery("");
+    },
+    onMutate: () => setIsLoading(true),
   });
 
   // search games by name mutation
@@ -41,12 +47,13 @@ export default function Home() {
     onSuccess: (response) => {
       dispatch(updateGames(filterGames(response.data.results)));
       calcAverageScore(response.data.results);
+      setShowDefault(false);
     },
   });
 
   useTitle("playwhat");
 
-  // remove games without release date and released games without esrb rating
+  // remove games without release date, sort by newest
   function filterGames(gamesToFilter) {
     const filtered = gamesToFilter.filter((game) => {
       if (!game.released) {
@@ -55,11 +62,15 @@ export default function Home() {
 
       const date = parseISO(game.released);
 
-      if (isPast(date) && game.esrb_rating) {
+      if (isPast(date)) {
         return true;
       }
 
       return false;
+    });
+
+    filtered.sort(function (a, b) {
+      return isBefore(parseISO(a.released), parseISO(b.released)) ? 0 : -1;
     });
 
     return filtered;
@@ -67,14 +78,13 @@ export default function Home() {
 
   // get default list of games from api
   async function loadData() {
-    // if query is stored, do search
+    // if query saved, do search
     if (storedQuery) {
       setQuery(storedQuery);
       fetchGamesByName(storedQuery);
     } else {
       // get default list of games
       fetchDefaultGames();
-      setShowDefault(true);
     }
   }
 
@@ -87,18 +97,14 @@ export default function Home() {
 
     // if empty input, display default list of games
     if (!query) {
-      setShowDefault(true);
-      setIsLoading(true);
       fetchDefaultGames();
-      setQuery("");
-      setStoredQuery("");
+
       return;
     }
 
     // search for games with input query
     setisSearchLoading(true);
     fetchGamesByName(query);
-    setShowDefault(false);
   }
 
   // get games on page load
@@ -138,12 +144,11 @@ export default function Home() {
     // show default games
     if (defaultGames?.data?.results) {
       dispatch(updateGames(defaultGames.data.results));
+      setQuery("");
+      setShowDefault(true);
     } else {
       // get default list of games
       fetchDefaultGames();
-      setShowDefault(true);
-      setQuery("");
-      setStoredQuery("");
     }
 
     // add new game to list of games

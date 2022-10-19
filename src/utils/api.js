@@ -8,6 +8,7 @@ axios.defaults.timeout = 10000;
 
 export function getDefaultGames() {
   // return Promise.reject("error");
+
   return axios.get(endpoints.games, {
     params: {
       key: API_KEY,
@@ -23,9 +24,10 @@ export function getGamesByName(query) {
       key: API_KEY,
       search: query,
       exclude_additions: true,
-      search_exact: true,
       page_size: 100,
-      ordering: "-released",
+      search_exact: true,
+      // search_precise: true,
+      // ordering: "-released",
     },
   });
 }

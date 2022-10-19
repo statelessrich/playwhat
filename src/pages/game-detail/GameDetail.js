@@ -28,7 +28,7 @@ export default function GameDetail() {
 
   // game details mutation
   const { mutate: fetchDetails } = useMutation(() => getGameDetails(id), {
-    onSettled: (response) => {
+    onSuccess: (response) => {
       // update game details
       dispatch(updateGameDetails(response.data));
       setStoredDetails(response.data);
@@ -37,7 +37,7 @@ export default function GameDetail() {
       // load add to calendar button
       atcb_init();
     },
-    // go home if error (invalid game)
+    // go home if error (invalid game id)
     onError: () => navigate("/"),
   });
 
@@ -74,19 +74,18 @@ export default function GameDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // return list of genres separated by pipe (|)
   function Genres() {
-    // return list of genres separated by |
     return formatGenres(gameDetails.genres);
   }
 
+  // return array of objects containing screenshot image info
   function getGameImages() {
-    // return array of objects containing screenshot image info
-    const images = gameDetails?.screenshots.map((screenshot, index) => ({
+    return gameDetails?.screenshots.map((screenshot, index) => ({
       original: screenshot.image,
       thumbnail: screenshot.image,
       originalAlt: `screenshot ${index + 1}`,
     }));
-    return images;
   }
 
   // returns release date and calendar button if in future
@@ -100,6 +99,7 @@ export default function GameDetail() {
     if (isFuture(date)) {
       return (
         <>
+          {/* release date */}
           <p>Releases {format(new Date(gameDetails.released), "MM/dd/yyyy")}</p>
 
           {/* add to calendar button */}

@@ -1,0 +1,6 @@
+notes
+
+
+Get-ChildItem -Recurse -Filter *.js | Rename-Item -NewName { $_.Name -replace '.js','.jsx' }
+
+New-Item -Path .\vite.config.js -ItemType File

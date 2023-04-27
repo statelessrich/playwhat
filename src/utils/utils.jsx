@@ -1,4 +1,4 @@
-import AddGameForm from "components/add-game-form/AddGameForm";
+import AddGameForm from "src/components/add-game-form/AddGameForm";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -30,7 +30,5 @@ export function formatPlatforms(list, separator = "|") {
 
 // return list separated by separator (default: |)
 export function formatGenres(list, separator = "|") {
-  return list?.map(
-    (genre, index) => `${genre.name}${index < list.length - 1 ? separator : ""}`,
-  );
+  return list?.map((genre, index) => `${genre.name}${index < list.length - 1 ? separator : ""}`);
 }

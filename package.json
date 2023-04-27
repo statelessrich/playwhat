@@ -25,7 +25,6 @@
     "react-query": "^3.39.2",
     "react-redux": "^8.0.4",
     "react-router-dom": "^6.4.2",
-    "react-scripts": "5.0.1",
     "react-select": "^5.5.4",
     "react-toastify": "^9.0.8",
     "react-use": "^17.4.0",
@@ -37,8 +36,9 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "start": "cross-env BROWSER='chrome' react-scripts start",
-    "build": "react-scripts build",
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
@@ -83,8 +83,10 @@
     "@storybook/preset-create-react-app": "^4.1.2",
     "@storybook/react": "^6.5.12",
     "@storybook/testing-library": "^0.0.13",
+    "@vitejs/plugin-react": "^4.0.0",
     "babel-plugin-named-exports-order": "^0.0.2",
     "prop-types": "^15.8.1",
+    "vite": "^4.3.3",
     "webpack": "^5.74.0"
   }
 }

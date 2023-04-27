@@ -1,6 +1,6 @@
 import { Route } from "react-router-dom";
-import GameDetail from "pages/game-detail/GameDetail";
-import Home from "pages/home/Home";
+import GameDetail from "src/pages/game-detail/GameDetail";
+import Home from "src/pages/home/Home";
 
 const routes = [
   <Route key={0} path="/" element={<Home />} />,

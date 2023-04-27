@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./add-game-form.module.scss";
 import Select from "react-select";
 import { Controller, useForm } from "react-hook-form";
-import { getPlatforms } from "utils/api";
+import { getPlatforms } from "src/utils/api";
 
 export default function AddGameForm({ isOpen, closeModal, submitGame }) {
   const [platforms, setPlatforms] = useState([]);

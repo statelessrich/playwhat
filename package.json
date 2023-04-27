@@ -73,6 +73,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/runtime": "^7.20.0",
     "@storybook/addon-actions": "^6.5.12",
     "@storybook/addon-essentials": "^6.5.12",
     "@storybook/addon-interactions": "^6.5.12",
@@ -83,7 +84,9 @@
     "@storybook/preset-create-react-app": "^4.1.2",
     "@storybook/react": "^6.5.12",
     "@storybook/testing-library": "^0.0.13",
+    "babel-jest": "^29.2.2",
     "babel-plugin-named-exports-order": "^0.0.2",
+    "babel-preset-env": "^1.7.0",
     "prop-types": "^15.8.1",
     "webpack": "^5.74.0"
   }

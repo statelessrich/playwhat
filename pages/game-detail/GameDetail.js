@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Game from "components/game/Game";
 import styles from "./gameDetail.module.scss";
 import { useNavigate } from "react-router-dom";
-import { getGameDetails, getGameScreenshots } from "utils/api";
+import { getGameDetails, getGameScreenshots } from "../../utils/api";
 import { useLocation } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import { useLocalStorage, useTitle } from "react-use";
@@ -12,7 +12,7 @@ import DOMPurify from "dompurify";
 
 import "react-image-gallery/styles/scss/image-gallery.scss";
 import "add-to-calendar-button/assets/css/atcb.css";
-import { formatGenres } from "utils/utils";
+import { formatGenres } from "../../utils/utils";
 import { useMutation } from "react-query";
 import { selectGameDetails, updateGameDetails } from "./gameDetailsSlice";
 import { useDispatch, useSelector } from "react-redux";

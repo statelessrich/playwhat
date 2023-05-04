@@ -1,6 +1,4 @@
-@import "utilities.scss";
-
-header {
+.header {
   height: 200px;
   background-color: #f9f9f9;
   display: flex;
@@ -19,7 +17,7 @@ header {
     }
   }
 
-  @media (max-width: $mobile) {
+  @media (max-width: var(--mobile)) {
     height: 100px;
   }
 }

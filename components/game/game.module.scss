@@ -1,5 +1,3 @@
-@import "../../utilities.scss";
-
 .game {
   height: 250px;
   margin: 20px 0;
@@ -47,7 +45,7 @@
     z-index: -111;
   }
 
-  @media (max-width: $mobile) {
+  @media (max-width: var(--mobile)) {
     img {
       top: 0;
     }

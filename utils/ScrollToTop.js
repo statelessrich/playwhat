@@ -1,13 +1,15 @@
+import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useLocation } from "react-router";
+// import { useLocation } from "react-router";
 
 // scrolls to top of page on route change
 const ScrollToTop = (props) => {
-  const location = useLocation();
+  const router = useRouter();
+  const { pathname } = router;
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [location]);
+  }, [pathname]);
 
   return <>{props.children}</>;
 };

@@ -1,5 +1,3 @@
-@import "utilities.scss";
-
 .home {
   padding: 50px 50px 100px 50px;
   min-height: 100vh;
@@ -22,7 +20,7 @@
     font-weight: bold;
   }
 
-  @media (max-width: $mobile) {
+  @media (max-width: var(--mobile)) {
     padding: 20px;
   }
 }

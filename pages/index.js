@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import { getDefaultGames, getGamesByName } from "utils/api";
-import Game from "components/game/Game";
-import styles from "./home.module.scss";
+import { getDefaultGames, getGamesByName } from "../utils/api";
+import Game from "../components/game/Game";
+import styles from "./index.module.scss";
 import "react-loading-skeleton/dist/skeleton.css";
-import Search from "components/search/Search";
+import Search from "../components/search/Search";
 import { useLocalStorage, useTitle } from "react-use";
 import { toast } from "react-toastify";
 import { isBefore, isPast, parseISO } from "date-fns";
-import { openAddGameModal } from "utils/utils";
+import { openAddGameModal } from "../utils/utils";
 import { useSelector, useDispatch } from "react-redux";
-import { selectGames, updateGames, deleteGames } from "pages/home/gamesSlice";
-import { createGame } from "pages/home/gamesSlice";
+import { selectGames, updateGames, deleteGames, createGame } from "./gamesSlice";
 import { useMutation } from "react-query";
 
 export default function Home() {
